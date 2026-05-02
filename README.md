@@ -30,5 +30,5 @@ plugin so the client could manage everything without touching code.
 HTML, CSS, JavaScript, WordPress, Elementor, Hostinger
 
 ## About me
-Divy Sharma — BCA Student at MSU Vadodara
-linkedin.com/in/divy-sharma-1ba540308
+Divy Sharma — BCA Student at MSU Vadodara 
+http://linkedin.com/in/divy-sharma-1ba540308
