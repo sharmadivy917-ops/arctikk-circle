@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Your Courses — Memory Mastery | ArctikkCircle</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ── FORCE ELEMENTOR FULL WIDTH ── */
+        .elementor-widget-container,
+        .elementor-widget-html,
+        .elementor-container,
+        .elementor-column,
+        .elementor-column-wrap,
+        .elementor-widget-wrap,
+        .e-con,
+        .e-con-inner {
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --red: #c93535;
+            --rd: #A02020;
+            --rdp: #7A1010;
+            --rl: #e05555;
+            --rp: #FDEAEA;
+            --rs: #F9D5D5;
+            --w: #FFFFFF;
+            --ow: #FDF8F8;
+            --bk: #0F0F0F;
+            --bk2: #1A1A1A;
+            --bk3: #242424;
+            --bk4: #2E2E2E;
+            --gr: #4A4A4A;
+            --grl: #999999;
+            --gold: #e8b84b;
+            --goldp: rgba(232, 184, 75, .12);
+            --golds: rgba(232, 184, 75, .3);
+            --green: #16a34a;
+            --greenp: rgba(22, 163, 74, .1);
+            --greens: rgba(22, 163, 74, .25);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--ow);
+            color: var(--bk);
+            overflow-x: hidden;
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        /* ── TOPBAR ── */
+        .topbar {
+            background: var(--w);
+            border-bottom: 2px solid var(--rs);
+            padding: 12px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 9000;
+            box-shadow: 0 2px 16px rgba(201, 53, 53, .07);
+        }
+
+        .topbar img {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* ── HERO BANNER ── */
+        .hero {
+            background: var(--bk);
+            padding: 70px 24px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 900px;
+            height: 420px;
+            background: radial-gradient(ellipse, rgba(201, 53, 53, .18) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: white;
+            border: 2px solid var(--red);
+            color: var(--red);
+            font-size: .82rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            padding: 8px 22px;
+            border-radius: 4px;
+            margin-bottom: 28px;
+            font-weight: 700;
+        }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 900;
+            line-height: 1.15;
+            color: var(--w);
+            max-width: 760px;
+            margin: 0 auto 18px;
+            letter-spacing: -.01em;
+        }
+
+        .hero h1 span {
+            color: var(--red);
+        }
+
+        .hero-div {
+            width: 48px;
+            height: 2px;
+            background: var(--red);
+            margin: 0 auto 20px;
+            opacity: .6;
+        }
+
+        .hero-sub {
+            color: rgba(255, 255, 255, .65);
+            font-size: clamp(1rem, 2vw, 1.15rem);
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* ── PROGRESS STRIP ── */
+        .progress-strip {
+            background: var(--bk2);
+            border-bottom: 1px solid rgba(201, 53, 53, .12);
+            padding: 28px 24px;
+        }
+
+        .progress-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .prog-lbl {
+            font-size: .78rem;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .45);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .prog-bar-wrap {
+            flex: 1;
+            min-width: 200px;
+            max-width: 420px;
+            background: rgba(255, 255, 255, .08);
+            border-radius: 99px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .prog-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--red), var(--rl));
+            border-radius: 99px;
+            width: 0%;
+            transition: width 1.2s cubic-bezier(.4, 0, .2, 1);
+        }
+
+        .prog-pct {
+            font-size: .85rem;
+            font-weight: 700;
+            color: var(--red);
+            white-space: nowrap;
+        }
+
+        .prog-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(201, 53, 53, .12);
+            border: 1px solid rgba(201, 53, 53, .25);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: .78rem;
+            color: rgba(255, 255, 255, .7);
+            font-weight: 600;
+        }
+
+        /* ── LAYOUT ── */
+        .wrap {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .page-body {
+            padding: 64px 0 96px;
+            background: var(--ow);
+            width: 100%;
+        }
+
+        .sec-head {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .lbl {
+            display: inline-block;
+            font-size: .72rem;
+            letter-spacing: .28em;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--red);
+        }
+
+        .rdiv {
+            width: 48px;
+            height: 3px;
+            background: var(--red);
+            margin: 0 auto 16px;
+            border-radius: 2px;
+        }
+
+        .sec-head h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+            font-weight: 900;
+            color: var(--bk);
+            letter-spacing: -.01em;
+            line-height: 1.1;
+            margin-bottom: 12px;
+        }
+
+        .sec-head p {
+            font-size: 1rem;
+            color: var(--gr);
+            max-width: 560px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* ── VERTICAL FEED ── */
+        .course-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 72px;
+            max-width: 1300px;
+            width: 92%;
+            margin: 0 auto;
+        }
+
+        .feed-card {
+            width: 100%;
+            background: var(--w);
+            border: 2px solid rgba(201, 53, 53, .25);
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, .08);
+        }
+
+        .feed-video {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            position: relative;
+            border-bottom: 2px solid rgba(201, 53, 53, .1);
+        }
+
+        .feed-video video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+        }
+
+        .feed-info {
+            padding: 32px 36px;
+        }
+
+        .feed-info-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .feed-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--bk);
+            line-height: 1.2;
+            margin: 0;
+        }
+
+        .feed-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 14px;
+            background: var(--ow);
+            border: 1px solid var(--rs);
+            padding: 10px 16px;
+            border-radius: 8px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .85rem;
+            color: var(--gr);
+            font-weight: 600;
+        }
+
+        .completed-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(22, 163, 74, .1);
+            color: #16a34a;
+            font-size: .9rem;
+            font-weight: 800;
+            padding: 12px 24px;
+            border-radius: 6px;
+            border: 1px solid rgba(22, 163, 74, .2);
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .mark-btn {
+            background-color: var(--red) !important;
+            color: white !important;
+            font-size: .9rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            padding: 14px 28px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: background .2s, transform .15s;
+            font-family: 'Outfit', sans-serif;
+            box-shadow: 0 6px 20px rgba(201, 53, 53, .25) !important;
+        }
+
+        .mark-btn:hover {
+            background-color: var(--rd) !important;
+            color: white !important;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(201, 53, 53, .4) !important;
+        }
+
+        /* ══════════════════════════════════════════
+   EBOOK SECTION
+══════════════════════════════════════════ */
+        .ebook-section {
+            max-width: 1300px;
+            width: 92%;
+            margin: 0 auto 72px;
+        }
+
+        /* ── PURCHASED STATE ── */
+        .ebook-card-purchased {
+            background: var(--bk);
+            border: 2px solid var(--golds);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(232, 184, 75, .12);
+            position: relative;
+        }
+
+        .ebook-card-purchased::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold), #f5d376, var(--gold));
+        }
+
+        .ebook-purchased-inner {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 0;
+        }
+
+        .ebook-cover-wrap {
+            background: linear-gradient(135deg, #1a1200, #2e2000);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 32px;
+            border-right: 1px solid rgba(232, 184, 75, .15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ebook-cover-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, rgba(232, 184, 75, .08) 0%, transparent 70%);
+        }
+
+        .ebook-cover-img {
+            width: 160px;
+            height: 210px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow:
+                -8px 8px 0 rgba(232, 184, 75, .2),
+                -16px 16px 0 rgba(232, 184, 75, .1),
+                0 20px 40px rgba(0, 0, 0, .5);
+            position: relative;
+            z-index: 1;
+            display: block;
+        }
+
+        .ebook-cover-placeholder {
+            width: 160px;
+            height: 210px;
+            background: linear-gradient(135deg, #2a1a00, #3d2600);
+            border: 2px solid rgba(232, 184, 75, .3);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow:
+                -8px 8px 0 rgba(232, 184, 75, .15),
+                -16px 16px 0 rgba(232, 184, 75, .08),
+                0 20px 40px rgba(0, 0, 0, .5);
+            position: relative;
+            z-index: 1;
+        }
+
+        .ebook-cover-placeholder span {
+            font-size: 3rem;
+        }
+
+        .ebook-cover-placeholder p {
+            font-size: .7rem;
+            color: rgba(232, 184, 75, .6);
+            text-align: center;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 0 12px;
+        }
+
+        .ebook-content {
+            padding: 40px 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .ebook-badge-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .ebook-owned-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--greenp);
+            border: 1px solid var(--greens);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: .72rem;
+            font-weight: 800;
+            color: #4ade80;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .ebook-type-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--goldp);
+            border: 1px solid var(--golds);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: .72rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: .06em;
+        }
+
+        .ebook-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+            font-weight: 900;
+            color: var(--w);
+            line-height: 1.2;
+            letter-spacing: -.01em;
+        }
+
+        .ebook-title span {
+            color: var(--gold);
+        }
+
+        .ebook-desc {
+            font-size: .92rem;
+            color: rgba(255, 255, 255, .55);
+            line-height: 1.75;
+            max-width: 480px;
+        }
+
+        .ebook-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .ebook-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .8rem;
+            color: rgba(255, 255, 255, .4);
+            font-weight: 600;
+        }
+
+        .ebook-download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--gold), #c99b2e);
+            color: var(--bk);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            font-size: 1rem;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 28px rgba(232, 184, 75, .35);
+            transition: transform .2s, box-shadow .2s;
+            align-self: flex-start;
+        }
+
+        .ebook-download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 36px rgba(232, 184, 75, .5);
+        }
+
+        .ebook-download-btn svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        /* ── LOCKED / BUY STATE ── */
+        .ebook-card-locked {
+            background: var(--bk);
+            border: 2px solid rgba(255, 255, 255, .06);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, .15);
+            position: relative;
+        }
+
+        .ebook-locked-inner {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 0;
+        }
+
+        .ebook-cover-wrap-locked {
+            background: linear-gradient(135deg, #111, #1a1a1a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 32px;
+            border-right: 1px solid rgba(255, 255, 255, .06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ebook-cover-locked {
+            width: 160px;
+            height: 210px;
+            background: var(--bk3);
+            border: 2px solid rgba(255, 255, 255, .08);
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            filter: blur(2px);
+            opacity: .4;
+        }
+
+        .ebook-lock-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            z-index: 2;
+        }
+
+        .ebook-lock-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, .06);
+            border: 1.5px solid rgba(255, 255, 255, .12);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .ebook-lock-text {
+            font-size: .72rem;
+            color: rgba(255, 255, 255, .35);
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .ebook-locked-content {
+            padding: 40px 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .ebook-locked-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: .72rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, .35);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            align-self: flex-start;
+        }
+
+        .ebook-locked-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+            font-weight: 900;
+            color: rgba(255, 255, 255, .5);
+            line-height: 1.2;
+            letter-spacing: -.01em;
+        }
+
+        .ebook-locked-desc {
+            font-size: .92rem;
+            color: rgba(255, 255, 255, .25);
+            line-height: 1.75;
+            max-width: 480px;
+        }
+
+        .ebook-price-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(255, 255, 255, .03);
+            border: 1px solid rgba(255, 255, 255, .07);
+            border-radius: 10px;
+            padding: 16px 20px;
+        }
+
+        .ebook-price-new {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--w);
+        }
+
+        .ebook-price-old {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            color: rgba(255, 255, 255, .25);
+            text-decoration: line-through;
+        }
+
+        .ebook-price-save {
+            background: var(--greenp);
+            border: 1px solid var(--greens);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: .72rem;
+            font-weight: 800;
+            color: #4ade80;
+        }
+
+        .ebook-buy-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--red);
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            font-size: 1rem;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            padding: 16px 32px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 8px 28px rgba(201, 53, 53, .3);
+            transition: transform .2s, box-shadow .2s, background .2s;
+            align-self: flex-start;
+        }
+
+        .ebook-buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 36px rgba(201, 53, 53, .45);
+            background: var(--rd);
+        }
+
+        .ebook-buy-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .ebook-secure-note {
+            font-size: .75rem;
+            color: rgba(255, 255, 255, .2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ── SECTION DIVIDER ── */
+        .ebook-section-header {
+            max-width: 1300px;
+            width: 92%;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .ebook-section-header .esh-line {
+            flex: 1;
+            height: 1px;
+            background: rgba(201, 53, 53, .15);
+        }
+
+        .ebook-section-header .esh-label {
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .25);
+            white-space: nowrap;
+            background: var(--bk2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        /* ── COMING SOON ── */
+        .coming-sec {
+            margin: 60px auto 0;
+            max-width: 900px;
+            padding: 48px 36px;
+            background: var(--bk);
+            border-radius: 16px;
+            border: 1.5px solid rgba(201, 53, 53, .18);
+            text-align: center;
+        }
+
+        .coming-sec h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--w);
+            margin: 12px 0 10px;
+        }
+
+        .coming-sec p {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, .55);
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        /* ── FOOTER ── */
+        .support-strip {
+            background: var(--rp);
+            border-top: 2px solid var(--rs);
+            padding: 32px 24px;
+            text-align: center;
+            margin-top: 64px;
+        }
+
+        .support-strip p {
+            font-size: .95rem;
+            color: var(--rd);
+            font-weight: 600;
+        }
+
+        .support-strip a {
+            color: var(--red);
+            text-decoration: underline;
+            font-weight: 700;
+        }
+
+        .footer {
+            background: var(--bk);
+            padding: 32px 24px;
+            text-align: center;
+            border-top: 1px solid rgba(201, 53, 53, .12);
+        }
+
+        .footer p {
+            font-size: .82rem;
+            color: rgba(255, 255, 255, .3);
+        }
+
+        /* ── SUCCESS TOAST ── */
+        .ebook-toast {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            z-index: 99999;
+            background: var(--bk2);
+            border: 1.5px solid var(--golds);
+            border-radius: 12px;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, .4);
+            transform: translateY(120px);
+            opacity: 0;
+            transition: all .4s cubic-bezier(.4, 0, .2, 1);
+            max-width: 360px;
+        }
+
+        .ebook-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .ebook-toast-icon {
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+
+        .ebook-toast-text strong {
+            display: block;
+            font-size: .92rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 3px;
+        }
+
+        .ebook-toast-text span {
+            font-size: .8rem;
+            color: rgba(255, 255, 255, .5);
+        }
+
+        @media(max-width:768px) {
+            .feed-info-inner {
+                flex-direction: column;
+                gap: 24px;
+                align-items: flex-start;
+            }
+
+            .feed-actions {
+                align-items: flex-start;
+                width: 100%;
+            }
+
+            .mark-btn {
+                width: 100%;
+            }
+
+            .card-meta {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .coming-sec {
+                border-radius: 0;
+                border-left: none;
+                border-right: none;
+            }
+
+            /* Ebook responsive */
+            .ebook-purchased-inner,
+            .ebook-locked-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .ebook-cover-wrap,
+            .ebook-cover-wrap-locked {
+                border-right: none;
+                border-bottom: 1px solid rgba(232, 184, 75, .15);
+                padding: 32px 24px;
+            }
+
+            .ebook-content,
+            .ebook-locked-content {
+                padding: 28px 24px;
+            }
+
+            .ebook-download-btn,
+            .ebook-buy-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .ebook-toast {
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="topbar">
+        <img src="https://arctikkcircle.in/wp-content/uploads/2026/03/Asset2_ywotg_3701.png" alt="ArctikkCircle Logo">
+    </header>
+
+    <section class="hero">
+        <div class="hero-tag">🎓 Your Courses</div>
+        <h1>Welcome to Your <span>Memory Mastery</span> Dashboard</h1>
+        <div class="hero-div"></div>
+    </section>
+
+    <div class="progress-strip">
+        <div class="progress-inner">
+            <span class="prog-lbl">Your Progress</span>
+            <div class="prog-bar-wrap">
+                <div class="prog-bar" id="progBar"></div>
+            </div>
+            <span class="prog-pct" id="progPct">0% Complete</span>
+            <span class="prog-badge">🔥 Keep Going!</span>
+        </div>
+    </div>
+
+    <main class="page-body">
+        <div class="wrap">
+            <div class="sec-head">
+                <h2>Your Courses</h2>
+                <p>Scroll down to watch each session. Mark them complete as you go to track your transformation.</p>
+            </div>
+        </div>
+
+        <div class="ebook-section-header">
+            <div class="esh-line"></div>
+            <div class="esh-label">📘 Bonus Ebook</div>
+            <div class="esh-line"></div>
+        </div>
+
+        <div class="ebook-section" id="ebookSection">
+        </div>
+
+        <div class="ebook-section-header" style="margin-bottom:0;">
+            <div class="esh-line"></div>
+            <div class="esh-label">🎬 Course Videos</div>
+            <div class="esh-line"></div>
+        </div>
+
+        <div class="course-feed" style="margin-top:32px;">
+            <div class="feed-card">
+                <div class="feed-video">
+                    <video controls controlsList="nodownload" oncontextmenu="return false;" preload="metadata"
+                        poster="https://arctikkcircle.in/wp-content/uploads/2026/03/YOUR-THUMBNAIL-IMAGE.jpg">
+                        <source
+                            src="https://arctikkcircle.in/wp-content/uploads/2026/03/Introduction-to-Memory-Mastery.mp4"
+                            type="video/mp4">
+                        Your browser does not support the video player.
+                    </video>
+                </div>
+                <div class="feed-info">
+                    <div class="feed-info-inner">
+                        <div class="feed-text">
+                            <div class="card-title">Introduction to Memory Mastery</div>
+                        </div>
+                        <div class="feed-actions">
+                            <div class="card-meta"><span class="meta-item">⏱ 2.46 min</span></div>
+                            <span class="completed-badge" id="done-1" style="display:none;">✓ Completed</span>
+                            <button class="mark-btn" onclick="markDone(1)" id="markbtn-1">Mark as Complete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feed-card">
+                <div class="feed-video">
+                    <video controls controlsList="nodownload" oncontextmenu="return false;" preload="metadata"
+                        poster="https://arctikkcircle.in/wp-content/uploads/2026/03/YOUR-THUMBNAIL-IMAGE.jpg">
+                        <source src="https://arctikkcircle.in/wp-content/uploads/2026/03/2.mp4" type="video/mp4">
+                        Your browser does not support the video player.
+                    </video>
+                </div>
+                <div class="feed-info">
+                    <div class="feed-info-inner">
+                        <div class="feed-text">
+                            <div class="card-title">Visualisation &amp; Story Building</div>
+                        </div>
+                        <div class="feed-actions">
+                            <div class="card-meta"><span class="meta-item">⏱ 8.01 min</span></div>
+                            <span class="completed-badge" id="done-2" style="display:none;">✓ Completed</span>
+                            <button class="mark-btn" onclick="markDone(2)" id="markbtn-2">Mark as Complete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feed-card">
+                <div class="feed-video">
+                    <video controls controlsList="nodownload" oncontextmenu="return false;" preload="metadata"
+                        poster="https://arctikkcircle.in/wp-content/uploads/2026/03/YOUR-THUMBNAIL-IMAGE.jpg">
+                        <source src="https://arctikkcircle.in/wp-content/uploads/2026/03/Note-Making-and-Revision.mp4"
+                            type="video/mp4">
+                        Your browser does not support the video player.
+                    </video>
+                </div>
+                <div class="feed-info">
+                    <div class="feed-info-inner">
+                        <div class="feed-text">
+                            <div class="card-title">Note Making &amp; Magnetic Notes</div>
+                        </div>
+                        <div class="feed-actions">
+                            <div class="card-meta"><span class="meta-item">⏱ 10.17 min</span></div>
+                            <span class="completed-badge" id="done-3" style="display:none;">✓ Completed</span>
+                            <button class="mark-btn" onclick="markDone(3)" id="markbtn-3">Mark as Complete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feed-card">
+                <div class="feed-video">
+                    <video controls controlsList="nodownload" oncontextmenu="return false;" preload="metadata"
+                        poster="https://arctikkcircle.in/wp-content/uploads/2026/03/YOUR-THUMBNAIL-IMAGE.jpg">
+                        <source src="https://arctikkcircle.in/wp-content/uploads/2026/03/4.mp4" type="video/mp4">
+                        Your browser does not support the video player.
+                    </video>
+                </div>
+                <div class="feed-info">
+                    <div class="feed-info-inner">
+                        <div class="feed-text">
+                            <div class="card-title">Memory Mastery Unleashed</div>
+                        </div>
+                        <div class="feed-actions">
+                            <div class="card-meta"><span class="meta-item">⏱ 16.45 min</span></div>
+                            <span class="completed-badge" id="done-4" style="display:none;">✓ Completed</span>
+                            <button class="mark-btn" onclick="markDone(4)" id="markbtn-4">Mark as Complete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="wrap">
+            <div class="coming-sec">
+                <div style="font-size:2.5rem;margin-bottom:10px;">🚀</div>
+                <h3>More Content Coming Soon</h3>
+                <p>We're adding new bonus sessions, Q&amp;A recordings, and worksheets every week. Stay tuned!</p>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 <a href="https://arctikkcircle.in">ArctikkCircle</a>. All rights reserved. · Memory Mastery Student
+            Portal</p>
+    </footer>
+
+    <div class="ebook-toast" id="ebookToast">
+        <div class="ebook-toast-icon">🎉</div>
+        <div class="ebook-toast-text">
+            <strong>Ebook Unlocked!</strong>
+            <span>Your download is ready above.</span>
+        </div>
+    </div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script>
+        // ══════════════════════════════════════════════════════
+        //  CONFIG — UPDATE THESE
+        // ══════════════════════════════════════════════════════
+        const EBOOK_PDF_URL = 'https://arctikkcircle.in/wp-content/uploads/2026/04/Memory-Mastery-EBOOK.pdf';
+        const EBOOK_COVER_URL = 'https://arctikkcircle.in/wp-content/uploads/2026/04/Screenshot-2026-04-01-145346.png';
+        const EBOOK_TITLE = '#7 Crazy Secrets to Remember Any NCERT Answer Within 60 Seconds';
+        const EBOOK_PRICE = 199;
+        const RZP_KEY = '';
+        const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyQtDZBTb1piMuMOU8YkQ6BpuqUrPxoulWFgSEhJHFH8RW3bAMPyoVZZ3uXuBMfjklJDA/exec';
+        const OMNISEND_KEY = '';
+
+        // ══════════════════════════════════════════════════════
+        //  SECURE CHECK: HAS USER PURCHASED EBOOK?
+        // ══════════════════════════════════════════════════════
+        function hasEbookAccess() {
+            // 1. Check if they just bought it on THIS page
+            if (localStorage.getItem('ebook_purchased') === '1') return true;
+
+            // 2. Check the secure memory from the main landing page
+            try {
+                const reg = JSON.parse(localStorage.getItem('yclp_reg') || '{}');
+                if (reg.addon_book === 'Yes' || (reg.package && reg.package.includes('Ebook'))) {
+                    return true;
+                }
+            } catch (e) { }
+
+            // If neither of those secure checks pass, it stays locked.
+            return false;
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  GET USER DATA (for Razorpay prefill)
+        // ══════════════════════════════════════════════════════
+        function getUserData() {
+            try {
+                const reg = JSON.parse(localStorage.getItem('yclp_reg') || '{}');
+                const p = new URLSearchParams(window.location.search);
+                return {
+                    name: p.get('user_name') || p.get('name') || reg.name || (reg.fname + ' ' + reg.lname).trim() || '',
+                    email: p.get('email') || reg.email || '',
+                    phone: p.get('phone') || reg.phone || '',
+                };
+            } catch (e) { return { name: '', email: '', phone: '' }; }
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  RENDER EBOOK — PURCHASED STATE
+        // ══════════════════════════════════════════════════════
+        function renderEbookPurchased() {
+            const coverHTML = EBOOK_COVER_URL
+                ? `<img src="${EBOOK_COVER_URL}" alt="Ebook Cover" class="ebook-cover-img">`
+                : `<div class="ebook-cover-placeholder">
+        <span>📘</span>
+        <p>Memory Mastery Ebook</p>
+       </div>`;
+
+            document.getElementById('ebookSection').innerHTML = `
+    <div class="ebook-card-purchased">
+      <div class="ebook-purchased-inner">
+
+        <div class="ebook-cover-wrap">
+          ${coverHTML}
+        </div>
+
+        <div class="ebook-content">
+          <div class="ebook-badge-row">
+            <span class="ebook-owned-badge">✅ You Own This</span>
+            <span class="ebook-type-badge">📘 Ebook</span>
+          </div>
+
+          <div class="ebook-title">${EBOOK_TITLE.replace('Within 60 Seconds', 'Within <span>60 Seconds</span>')}</div>
+
+          <div class="ebook-desc">
+            Your exclusive companion book to reinforce memory mastery. Gives you complete freedom from endless rote learning so your child can score more — studying less.
+          </div>
+
+          <div class="ebook-meta-row">
+            <span class="ebook-meta-item">📄 PDF Format</span>
+            <span class="ebook-meta-item">⚡ Instant Download</span>
+            <span class="ebook-meta-item">🔓 Lifetime Access</span>
+          </div>
+
+          <a href="${EBOOK_PDF_URL}" class="ebook-download-btn" download target="_blank">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Download Your Ebook
+          </a>
+        </div>
+
+      </div>
+    </div>
+  `;
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  RENDER EBOOK — LOCKED / BUY STATE
+        // ══════════════════════════════════════════════════════
+        function renderEbookLocked() {
+            document.getElementById('ebookSection').innerHTML = `
+    <div class="ebook-card-locked">
+      <div class="ebook-locked-inner">
+
+        <div class="ebook-cover-wrap-locked" style="position:relative;">
+          <div class="ebook-cover-locked">
+            <span style="font-size:3rem;">📘</span>
+            <p style="font-size:.7rem;color:rgba(255,255,255,.2);text-align:center;padding:0 12px;">Memory Mastery Ebook</p>
+          </div>
+          <div class="ebook-lock-overlay">
+            <div class="ebook-lock-icon">🔒</div>
+            <div class="ebook-lock-text">Locked</div>
+          </div>
+        </div>
+
+        <div class="ebook-locked-content">
+          <span class="ebook-locked-tag">📘 Bonus Ebook — Not Purchased</span>
+
+          <div class="ebook-locked-title">${EBOOK_TITLE}</div>
+
+          <div class="ebook-locked-desc">
+            Unlock your exclusive companion book to reinforce memory mastery. Eliminate rote learning and help your child score more — studying less. One-time purchase, lifetime access.
+          </div>
+
+          <div class="ebook-price-row">
+            <span class="ebook-price-new">₹${EBOOK_PRICE}</span>
+            <span class="ebook-price-old">₹999</span>
+            <span class="ebook-price-save">80% OFF</span>
+          </div>
+
+          <button class="ebook-buy-btn" id="ebookBuyBtn" onclick="handleEbookPayment()">
+            🔓 Unlock Ebook for ₹${EBOOK_PRICE}
+          </button>
+
+          <div class="ebook-secure-note">🔒 Secure Razorpay Payment · Instant Access After Purchase</div>
+        </div>
+
+      </div>
+    </div>
+  `;
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  HANDLE EBOOK PAYMENT (course page purchase)
+        // ══════════════════════════════════════════════════════
+        function handleEbookPayment() {
+            const btn = document.getElementById('ebookBuyBtn');
+            const user = getUserData();
+
+            if (btn) { btn.disabled = true; btn.textContent = 'Opening payment…'; }
+
+            const rzp = new Razorpay({
+                key: RZP_KEY,
+                amount: EBOOK_PRICE * 100,
+                currency: 'INR',
+                name: 'ArctikkCircle',
+                description: '#7 Crazy Secrets Ebook',
+                image: 'https://arctikkcircle.in/wp-content/uploads/2026/03/Asset2_ywotg_3701.png',
+                prefill: { name: user.name, email: user.email, contact: user.phone },
+                notes: { product: 'Ebook', type: 'EBOOK_PURCHASE' },
+                theme: { color: '#c93535' },
+
+                handler: function (response) {
+                    // Save ebook access
+                    localStorage.setItem('ebook_purchased', '1');
+
+                    // Send to sheet
+                    fetch(SHEET_URL, {
+                        method: 'POST', mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            ...user,
+                            product: 'Ebook',
+                            payment_id: response.razorpay_payment_id,
+                            total: EBOOK_PRICE,
+                            status: 'EBOOK PAID ✅',
+                            type: 'EBOOK_PURCHASE',
+                            timestamp: new Date().toLocaleString('en-IN')
+                        })
+                    }).catch(e => console.error('Sheet error:', e));
+
+                    // Send to Omnisend
+                    sendEbookToOmnisend(user, response.razorpay_payment_id);
+
+                    // Show purchased state
+                    renderEbookPurchased();
+                    showEbookToast();
+                },
+
+                modal: {
+                    ondismiss: function () {
+                        if (btn) { btn.disabled = false; btn.textContent = `🔓 Unlock Ebook for ₹${EBOOK_PRICE}`; }
+                    }
+                }
+            });
+
+            rzp.open();
+        }
+        window.handleEbookPayment = handleEbookPayment; // Global scope
+
+        // ══════════════════════════════════════════════════════
+        //  OMNISEND — EBOOK PURCHASE EVENT
+        // ══════════════════════════════════════════════════════
+        function sendEbookToOmnisend(user, paymentId) {
+            const cleanPhone = user.phone ? '+91' + user.phone.replace(/\D/g, '').slice(-10) : '';
+
+            // Contact update
+            fetch('https://api.omnisend.com/v3/contacts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-API-KEY': OMNISEND_KEY },
+                body: JSON.stringify({
+                    identifiers: [
+                        { type: 'email', id: user.email, channels: { email: { status: 'subscribed', statusDate: new Date().toISOString() } } }
+                    ],
+                    tags: ['YCLP', 'Ebook', 'Ebook_Purchased'],
+                    customProperties: {
+                        ebook_payment_id: paymentId,
+                        ebook_total: EBOOK_PRICE
+                    }
+                })
+            }).catch(e => console.error('Omnisend contact error:', e));
+
+            // Event
+            fetch('https://api.omnisend.com/v3/events', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-API-KEY': OMNISEND_KEY },
+                body: JSON.stringify({
+                    systemName: 'EBOOK_PURCHASED',
+                    email: user.email,
+                    fields: {
+                        firstName: user.name.split(' ')[0] || '',
+                        phone: cleanPhone,
+                        payment_id: paymentId,
+                        total: EBOOK_PRICE,
+                        currency: 'INR',
+                        ebook_name: EBOOK_TITLE
+                    }
+                })
+            }).catch(e => console.error('Omnisend event error:', e));
+
+            // Order
+            fetch('https://api.omnisend.com/v3/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-API-KEY': OMNISEND_KEY },
+                body: JSON.stringify({
+                    orderID: paymentId,
+                    email: user.email,
+                    currency: 'INR',
+                    orderSum: EBOOK_PRICE,
+                    subTotalSum: EBOOK_PRICE,
+                    taxSum: 0,
+                    paymentMethod: 'Razorpay',
+                    paymentStatus: 'paid',
+                    fulfillmentStatus: 'fulfilled',
+                    createdAt: new Date().toISOString(),
+                    products: [{
+                        productID: 'EBOOK-001',
+                        sku: 'EBOOK-NCERT-7SECRETS',
+                        name: EBOOK_TITLE,
+                        quantity: 1,
+                        price: EBOOK_PRICE,
+                        currency: 'INR',
+                        productUrl: 'https://arctikkcircle.in'
+                    }],
+                    billingAddress: {
+                        firstName: user.name.split(' ')[0] || '',
+                        lastName: user.name.split(' ').slice(1).join(' ') || '',
+                        phone: cleanPhone,
+                        country: 'IN'
+                    }
+                })
+            }).catch(e => console.error('Omnisend order error:', e));
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  TOAST
+        // ══════════════════════════════════════════════════════
+        function showEbookToast() {
+            const toast = document.getElementById('ebookToast');
+            if (!toast) return;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 5000);
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  COURSE PROGRESS
+        // ══════════════════════════════════════════════════════
+        const TOTAL = 4;
+        let completed = JSON.parse(localStorage.getItem('yclp_done') || '[]');
+
+        function markDone(id) {
+            if (!completed.includes(id)) {
+                completed.push(id);
+                localStorage.setItem('yclp_done', JSON.stringify(completed));
+                setDone(id);
+                updateProgress(true);
+            }
+        }
+        window.markDone = markDone;
+
+        function setDone(id) {
+            const badge = document.getElementById('done-' + id);
+            const btn = document.getElementById('markbtn-' + id);
+            if (badge) badge.style.display = 'inline-flex';
+            if (btn) btn.style.display = 'none';
+        }
+
+        function updateProgress(animate) {
+            const pct = Math.round((completed.length / TOTAL) * 100);
+            document.getElementById('progPct').textContent = pct + '% Complete';
+            const bar = document.getElementById('progBar');
+            if (animate) bar.style.width = pct + '%';
+            else { bar.style.transition = 'none'; bar.style.width = pct + '%'; }
+        }
+
+        // ══════════════════════════════════════════════════════
+        //  INIT
+        // ══════════════════════════════════════════════════════
+        function initPortal() {
+            if (hasEbookAccess()) {
+                renderEbookPurchased();
+            } else {
+                renderEbookLocked();
+            }
+            completed.forEach(id => setDone(id));
+            updateProgress();
+            setTimeout(() => updateProgress(true), 300);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initPortal);
+        } else {
+            initPortal();
+        }
+    </script>
+</body>
+
+</html>

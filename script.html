@@ -1,0 +1,515 @@
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    // ═══════════════════════════
+    //  CONFIG
+    // ═══════════════════════════
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxuO5B8Oy0sRQZRIKyB2lhWGhvtfmqZtsZtXcjO6CwMVFMe3oF-nY8dRkd1cKEhGnrN1w/exec';
+    const RZP_KEY = ''; // Using Live Key
+    const OMNISEND_KEY = '';
+    const META_CAPI_TOKEN = '';
+    const META_PIXEL_ID = '';
+    const WP_API_URL = 'https://arctikkcircle.in/wp-json/yclp/v1/register';
+    const OTO_PAGE_URL = 'https://arctikkcircle.in/oto/';
+
+    const BASE_PRICE = 499;
+    const GST_RATE = 0;
+    const ADDON_PRICES = {
+        'addon-book': 199
+    };
+    // ═══════════════════════════
+
+    // ── META DEDUPLICATION: generates a unique ID shared by Pixel + CAPI ──
+    function generateEventId() {
+        return 'evt_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+    }
+
+    function calcTotals() {
+        let subtotal = BASE_PRICE;
+        // addon-book is a hidden input (value '0' or '1') — not a checkbox
+        const bookEl = document.getElementById('addon-book');
+        if (bookEl && (bookEl.value === '1' || bookEl.checked)) subtotal += ADDON_PRICES['addon-book'];
+        const gst = Math.round(subtotal * GST_RATE);
+        const total = subtotal + gst;
+        return { subtotal, gst, total };
+    }
+
+    // In this payment script, rename it
+    function syncTotalDisplay() {
+        const { subtotal, gst, total } = calcTotals();
+        const fmt = n => '₹' + n.toLocaleString('en-IN');
+        const addonRow = document.getElementById('addon-row');
+        const t = document.getElementById('total-amount');
+        if (addonRow) addonRow.style.display = (window.ebookSelected ? 'flex' : 'none');
+        if (t) t.textContent = fmt(total);
+        return total;
+    }
+
+    // And replace the DOMContentLoaded call
+    document.addEventListener('DOMContentLoaded', function () { syncTotalDisplay(); });
+
+    function getPackage() {
+        const bookEl = document.getElementById('addon-book');
+        const book = bookEl && (bookEl.value === '1' || bookEl.checked);
+        const recording = document.getElementById('addon-recording')?.checked;
+        if (book && recording) return 'Course + Ebook + Recording';
+        if (book) return 'Course + Ebook';
+        if (recording) return 'Course + Recording';
+        return 'Course Only';
+    }
+
+    function pushEvent(eventName, data) {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: eventName,
+            user_fname: data.fname,
+            user_lname: data.lname,
+            user_name: data.name,
+            user_phone: data.phone,
+            user_email: data.email,
+            user_city: data.city,
+            workshop_date: data.workshop_date,
+            child_standard: data.standard,
+            package: data.package,
+            addon_book: data.addon_book,
+            addon_recording: data.addon_recording,
+            subtotal: data.subtotal,
+            gst: data.gst,
+            total: data.total,
+            currency: 'INR',
+            payment_id: data.payment_id || '',
+            ecommerce: {
+                transaction_id: data.payment_id || '',
+                value: data.total,
+                tax: data.gst,
+                currency: 'INR',
+                items: [{
+                    item_id: 'MEMORY-MASTERY-COURSE',
+                    item_name: data.package,
+                    price: data.subtotal,
+                    quantity: 1
+                }]
+            }
+        });
+    }
+
+    function sendToSheet(data) {
+        fetch(SHEET_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }).catch(err => console.error('Sheet error:', err));
+    }
+
+    function sendToWordPress(data) {
+        fetch(WP_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .then(r => r.json())
+            .then(res => console.log('WP DB saved:', res))
+            .catch(err => console.error('WP DB error:', err));
+    }
+
+    function sendToOmnisend(eventType, data) {
+        const cleanPhone = '+91' + data.phone.replace(/\D/g, '').slice(-10);
+
+        // ── BUILD TAGS ──
+        const tags = ['YCLP', 'Course', eventType, data.workshop_date || ''];
+        if (data.addon_book === 'Yes') tags.push('ebook_purchased');
+
+        function safeFetch(url, options, label) {
+            fetch(url, options)
+                .then(res => {
+                    if (res.status === 204 || res.headers.get('content-length') === '0') return null;
+                    return res.text().then(text => { });
+                })
+                .catch(err => console.error(label + ' error:', err));
+        }
+
+        safeFetch('https://api.omnisend.com/v3/contacts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-API-KEY': OMNISEND_KEY },
+            body: JSON.stringify({
+                identifiers: [
+                    { type: 'email', id: data.email, channels: { email: { status: 'subscribed', statusDate: new Date().toISOString() } } },
+                    { type: 'phone', id: cleanPhone, channels: { sms: { status: 'subscribed', statusDate: new Date().toISOString() } } }
+                ],
+                firstName: data.fname,
+                lastName: data.lname,
+                tags: tags,
+                customProperties: {
+                    city: data.city || '',
+                    workshop_date: data.workshop_date || '',
+                    child_standard: data.standard || '',
+                    package: data.package || '',
+                    addon_book: data.addon_book || '',
+                    addon_recording: data.addon_recording || '',
+                    subtotal: Number(data.subtotal) || 0,
+                    gst: Number(data.gst) || 0,
+                    total: Number(data.total) || 0,
+                    payment_id: data.payment_id || ''
+                }
+            })
+        }, 'Omnisend contact');
+
+        safeFetch('https://api.omnisend.com/v3/events', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-API-KEY': OMNISEND_KEY },
+            body: JSON.stringify({
+                systemName: eventType,
+                email: data.email,
+                fields: {
+                    firstName: data.fname || '',
+                    lastName: data.lname || '',
+                    phone: cleanPhone,
+                    city: data.city || '',
+                    workshop_date: data.workshop_date || '',
+                    standard: data.standard || '',
+                    package: data.package || '',
+                    addon_book: data.addon_book || '',
+                    addon_recording: data.addon_recording || '',
+                    subtotal: Number(data.subtotal) || 0,
+                    gst: Number(data.gst) || 0,
+                    total: Number(data.total) || 0,
+                    payment_id: data.payment_id || '',
+                    currency: 'INR'
+                }
+            })
+        }, 'Omnisend event');
+
+        if (eventType === 'PAID') {
+            safeFetch('https://api.omnisend.com/v3/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-API-KEY': OMNISEND_KEY },
+                body: JSON.stringify({
+                    orderID: data.payment_id,
+                    email: data.email,
+                    currency: 'INR',
+                    orderSum: Number(data.total),
+                    subTotalSum: Number(data.subtotal),
+                    taxSum: Number(data.gst),
+                    paymentMethod: 'Razorpay',
+                    paymentStatus: 'paid',
+                    fulfillmentStatus: 'unfulfilled',
+                    createdAt: new Date().toISOString(),
+                    products: [{
+                        productID: 'MEMORY-MASTERY-COURSE',
+                        sku: 'MMC-001',
+                        name: data.package || 'Memory Mastery Course',
+                        quantity: 1,
+                        price: Number(data.subtotal),
+                        currency: 'INR',
+                        imageUrl: 'https://arctikkcircle.in/wp-content/uploads/logo.png',
+                        productUrl: 'https://arctikkcircle.in'
+                    }],
+                    billingAddress: {
+                        firstName: data.fname || '',
+                        lastName: data.lname || '',
+                        phone: cleanPhone,
+                        city: data.city || '',
+                        country: 'IN'
+                    }
+                })
+            }, 'Omnisend order');
+        }
+    }
+
+    let cachedClientIP = '';
+    async function getClientIP() {
+        if (cachedClientIP) return cachedClientIP;
+        try {
+            const res = await fetch('https://api64.ipify.org?format=json');
+            const data = await res.json();
+            cachedClientIP = data.ip;
+            return cachedClientIP;
+        } catch (e) {
+            console.error('IP fetch error:', e);
+            return '';
+        }
+    }
+
+    // ── META CAPI — accepts event_id for deduplication ──
+    async function sendToMetaCAPI(eventName, data) {
+        const ip = await getClientIP();
+
+        const user_data = {
+            client_user_agent: navigator.userAgent
+        };
+
+        if (ip) user_data.client_ip_address = ip;
+        if (data && data.email) user_data.em = [await hashData(data.email)];
+        if (data && data.phone) user_data.ph = [await hashData(data.phone)];
+        if (data && data.fname) user_data.fn = [await hashData(data.fname)];
+        if (data && data.lname) user_data.ln = [await hashData(data.lname)];
+
+        const custom_data = {};
+        if (data && data.total) {
+            custom_data.currency = 'INR';
+            custom_data.value = data.total;
+            custom_data.content_name = 'Memory Mastery Course';
+            custom_data.content_type = 'product';
+            if (eventName === 'InitiateCheckout') custom_data.num_items = 1;
+        }
+
+        const payload = {
+            data: [{
+                event_name: eventName,
+                event_time: Math.floor(Date.now() / 1000),
+                event_id: (data && data.event_id) ? data.event_id : generateEventId(),
+                action_source: 'website',
+                event_source_url: window.location.href,
+                user_data: user_data,
+                custom_data: Object.keys(custom_data).length > 0 ? custom_data : undefined
+            }]
+        };
+
+        try {
+            await fetch(
+                `https://graph.facebook.com/v18.0/${META_PIXEL_ID}/events?access_token=${META_CAPI_TOKEN}`,
+                { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }
+            );
+        } catch (e) {
+            console.error('META CAPI sending failed: ', e);
+        }
+    }
+
+    async function hashData(value) {
+        if (!value) return '';
+        const msgBuffer = new TextEncoder().encode(value.toLowerCase().trim());
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    function validateForm(fname, lname, phone, email, standard, city) {
+        if (!fname) { alert('Please enter your first name.'); document.getElementById('reg-fname')?.focus(); return false; }
+        if (!lname) { alert('Please enter your last name.'); document.getElementById('reg-lname')?.focus(); return false; }
+        if (!phone || phone.replace(/\D/g, '').length < 10) { alert('Please enter a valid 10-digit phone.'); document.getElementById('reg-phone')?.focus(); return false; }
+        if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); document.getElementById('reg-email')?.focus(); return false; }
+        if (!standard) { alert("Please select your child's standard."); document.getElementById('reg-standard')?.focus(); return false; }
+        if (!city) { alert('Please enter your city.'); document.getElementById('reg-city')?.focus(); return false; }
+        return true;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // ── TRIGGER PAGEVIEW VIA CAPI & PIXEL ON LOAD ──
+        const pageViewEventId = generateEventId();
+        if (typeof fbq !== 'undefined') {
+            fbq('track', 'PageView', {}, { eventID: pageViewEventId });
+        }
+        sendToMetaCAPI('PageView', { event_id: pageViewEventId });
+
+        document.querySelectorAll(
+            '.tbtn, .btn, .bp-cta, .s5-cta, .bold-cta, .hstrip-cta, a[href="#register"]'
+        ).forEach(function (el) {
+            el.addEventListener('click', function () {
+                if (typeof fbq !== 'undefined') {
+                    fbq('track', 'AddToWishlist', {
+                        value: 499,
+                        currency: 'INR',
+                        content_name: 'Memory Mastery Course',
+                        content_type: 'product'
+                    });
+                }
+            });
+        });
+
+        const btn = document.getElementById('rzp-pay-btn');
+        if (!btn) { return; }
+
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const fname = document.getElementById('reg-fname')?.value.trim() || '';
+            const lname = document.getElementById('reg-lname')?.value.trim() || '';
+
+            // 🔴 FIX: Cleanly joins fname and lname, handles empty last names perfectly
+            const name = (fname + ' ' + lname).trim();
+
+            const phone = document.getElementById('reg-phone')?.value.trim() || '';
+            const email = document.getElementById('reg-email')?.value.trim() || '';
+            const standard = document.getElementById('reg-standard')?.value || '';
+            const city = document.getElementById('reg-city')?.value.trim() || '';
+
+            const workshopDateEl = document.querySelector('input[name="workshop_date"]:checked');
+            const workshopDate = workshopDateEl ? workshopDateEl.value : '28th March';
+
+            // addon-book is a hidden input (value '0'/'1') set by the ebook toggle button
+            const bookEl = document.getElementById('addon-book');
+            const addonBook = (bookEl && (bookEl.value === '1' || bookEl.checked)) ? 'Yes' : 'No';
+            const addonRecording = document.getElementById('addon-recording')?.checked ? 'Yes' : 'No';
+            const pkg = getPackage();
+            const { subtotal, gst, total } = calcTotals();
+
+            if (!validateForm(fname, lname, phone, email, standard, city)) return;
+
+            const formData = {
+                fname, lname, name,
+                phone, email, standard, city,
+                workshop_date: workshopDate,
+                package: pkg,
+                addon_book: addonBook,
+                addon_recording: addonRecording,
+                subtotal, gst, total,
+                payment_id: '',
+                status: 'Form Submitted — Payment Pending',
+                timestamp: new Date().toLocaleString('en-IN')
+            };
+
+            pushEvent('form_submitted', formData);
+            sendToSheet(formData);
+            sendToWordPress(formData);
+            sendToOmnisend('FORM_SUBMITTED', formData);
+
+            // ── INITIATE CHECKOUT — shared event_id deduplicates Pixel + CAPI ──
+            const checkoutEventId = generateEventId();
+            if (typeof fbq !== 'undefined') {
+                fbq('track', 'InitiateCheckout', {
+                    value: total,
+                    currency: 'INR',
+                    content_name: 'Memory Mastery Course',
+                    content_type: 'product',
+                    num_items: 1
+                }, { eventID: checkoutEventId });
+            }
+            sendToMetaCAPI('InitiateCheckout', {
+                email, phone, fname, lname, total,
+                event_id: checkoutEventId
+            });
+
+            let paymentCompleted = false;
+            const abandonTimer = setTimeout(function () {
+                if (!paymentCompleted) {
+                    const abandonData = {
+                        ...formData,
+                        status: 'Payment Abandoned ⚠️',
+                        timestamp: new Date().toLocaleString('en-IN')
+                    };
+                    pushEvent('payment_abandoned', abandonData);
+                    sendToSheet(abandonData);
+                    sendToWordPress(abandonData);
+                    sendToOmnisend('PAYMENT_ABANDONED', abandonData);
+                    if (typeof fbq !== 'undefined') {
+                        fbq('trackCustom', 'PaymentAbandoned', {
+                            value: total, currency: 'INR', content_name: 'Memory Mastery Course'
+                        });
+                    }
+                }
+            }, 10 * 60 * 1000);
+
+            const rzp = new Razorpay({
+                key: RZP_KEY,
+                amount: total * 100,
+                currency: 'INR',
+                name: 'ArctikkCircle',
+                description: pkg,
+                image: 'https://arctikkcircle.in/wp-content/uploads/2026/03/Asset2_ywotg_3701.png',
+                prefill: { name, email, contact: phone },
+                notes: { fname, lname, standard, city, workshop_date: workshopDate, package: pkg, addon_book: addonBook, addon_recording: addonRecording, subtotal, gst },
+                theme: { color: '#c93535' },
+
+                handler: function (response) {
+                    paymentCompleted = true;
+                    clearTimeout(abandonTimer);
+
+                    const paidData = {
+                        ...formData,
+                        payment_id: response.razorpay_payment_id,
+                        status: 'PAID ✅',
+                        timestamp: new Date().toLocaleString('en-IN')
+                    };
+
+                    localStorage.setItem('yclp_reg', JSON.stringify({
+                        fname, lname, name, email, phone, standard, city,
+                        workshop_date: workshopDate,
+                        package: pkg,
+                        addon_book: addonBook,
+                        payment_id: response.razorpay_payment_id,
+                        workshop: 'Memory Mastery Course'
+                    }));
+
+                    pushEvent('purchase', paidData);
+                    sendToSheet(paidData);
+                    sendToWordPress(paidData);
+                    sendToOmnisend('PAID', paidData);
+
+                    // ── PURCHASE — shared event_id deduplicates Pixel + CAPI ──
+                    const purchaseEventId = generateEventId();
+                    if (typeof fbq !== 'undefined') {
+                        fbq('track', 'Purchase', {
+                            value: total,
+                            currency: 'INR',
+                            content_name: 'Memory Mastery Course',
+                            content_type: 'product',
+                            transaction_id: response.razorpay_payment_id
+                        }, { eventID: purchaseEventId });
+                    }
+                    sendToMetaCAPI('Purchase', {
+                        email, phone, fname, lname, total,
+                        event_id: purchaseEventId
+                    });
+                    // Show success + spam notice
+                    const toast = document.createElement('div');
+                    toast.innerHTML = `
+    <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.75);z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;">
+        <div style="background:#1A1A1A;border:1.5px solid #22c55e;border-radius:16px;padding:36px 32px;max-width:420px;width:100%;text-align:center;">
+            <div style="font-size:3rem;margin-bottom:12px;">🎉</div>
+            <h3 style="font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:900;color:#ffffff;margin-bottom:10px;">Payment Successful!</h3>
+            <p style="font-family:'Outfit',sans-serif;font-size:.95rem;color:rgba(255,255,255,.7);line-height:1.75;margin-bottom:20px;">Your Memory Mastery Course is confirmed. You'll receive course details on your email shortly.</p>
+            <div style="background:rgba(245,200,66,.08);border:1.5px solid rgba(245,200,66,.3);border-radius:10px;padding:14px 18px;margin-bottom:16px;">
+                <p style="font-family:'Outfit',sans-serif;font-size:.88rem;color:#f5c842;font-weight:800;margin:0 0 6px;">📬 Can't find our email?</p>
+                <p style="font-family:'Outfit',sans-serif;font-size:.82rem;color:rgba(255,255,255,.6);margin:0;line-height:1.65;">Check your <strong style="color:#fff;">Spam</strong> or <strong style="color:#fff;">Promotions</strong> folder and mark us as a safe sender.</p>
+            </div>
+            <p style="font-family:'Outfit',sans-serif;font-size:.78rem;color:rgba(255,255,255,.3);margin:0;">Redirecting you in a moment…</p>
+        </div>
+    </div>
+`;
+                    document.body.appendChild(toast);
+                    setTimeout(function () {
+
+                        // 🔴 FIX: Cleanly transfers ONLY the required parameters to the URL.
+                        // Addon data is completely hidden to prevent cheating.
+                        const otoUrl = OTO_PAGE_URL
+                            + '?yclp_redirect=1'
+                            + '&payment_id=' + encodeURIComponent(response.razorpay_payment_id)
+                            + '&user_name=' + encodeURIComponent(name)
+                            + '&email=' + encodeURIComponent(email)
+                            + '&phone=' + encodeURIComponent(phone)
+                            + '&standard=' + encodeURIComponent(standard);
+
+                        window.location.replace(otoUrl);
+                    }, 3500);
+                },
+
+                modal: {
+                    ondismiss: function () {
+                        paymentCompleted = true;
+                        clearTimeout(abandonTimer);
+
+                        const cancelData = {
+                            ...formData,
+                            status: 'Payment Cancelled ❌',
+                            timestamp: new Date().toLocaleString('en-IN')
+                        };
+                        pushEvent('payment_cancelled', cancelData);
+                        sendToSheet(cancelData);
+                        sendToWordPress(cancelData);
+                        sendToOmnisend('PAYMENT_CANCELLED', cancelData);
+
+                        if (typeof fbq !== 'undefined') {
+                            fbq('trackCustom', 'PaymentCancelled', {
+                                value: total, currency: 'INR', content_name: 'Memory Mastery Course'
+                            });
+                        }
+                    }
+                }
+            });
+
+            rzp.open();
+        });
+    });
+</script>
